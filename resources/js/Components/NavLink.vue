@@ -3,7 +3,7 @@
 </script>
 
 <template>
-    <a :href="href" class="hover:bg-gray-700 px-3 py-2 rounded-lg">
+    <a :href="href" class="bg-gray-900 transition px-3 py-2 rounded-lg hover:bg-gray-700">
         <slot></slot>
     </a>
 </template>
