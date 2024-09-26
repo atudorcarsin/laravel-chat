@@ -33,7 +33,7 @@
                 </div>
 
                 <div v-if="inviteFormIsActive" class="flex flex-col items-center border-2 border-gray-700 mt-2 py-2 rounded-xl">
-                    <form>
+                    <form @submit.prevent="form.post(route('chatinvites.store'))">
                         <div>
                             <InputLabel class="pl-1" for="username" value="Username" />
 

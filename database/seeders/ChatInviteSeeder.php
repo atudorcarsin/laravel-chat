@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class ChatRequestSeeder extends Seeder
+class ChatInviteSeeder extends Seeder
 {
     /**
      * Run the database seeds.

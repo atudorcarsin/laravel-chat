@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Chat;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Chat\StoreChatInvite;
 use App\Http\Requests\Chat\StoreChatRequest;
 use App\Models\Chat;
 use Illuminate\Http\Request;

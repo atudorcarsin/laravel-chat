@@ -12,7 +12,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('chat_requests', function (Blueprint $table) {
+        Schema::create('chat_invites', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(User::class, 'sender_id');
             $table->foreignIdFor(User::class, 'receiver_id');
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('chat_requests');
+        Schema::dropIfExists('chat_invites');
     }
 };
