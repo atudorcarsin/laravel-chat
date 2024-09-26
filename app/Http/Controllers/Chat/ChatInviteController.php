@@ -39,22 +39,17 @@ class ChatInviteController extends Controller
     {
         $validated = $request->validated();
 
-        $invitedUser = User::where('username', $validated['username'])->get();
-        $invitedUserExists = !$invitedUser->isEmpty();
+        $invitedUser = User::where('username', $validated['username'])->first();
 
-        if ($invitedUserExists) {
-            $invitedUser = $invitedUser->first();
-        } else {
+        if (!$invitedUser) {
             return redirect(route('chats.index'));
         }
 
-        $chatDoesNotExist = Chat::where('user_one_id', Auth::user()->id)->where('user_two_id', $invitedUser->id)->get()->isEmpty()
-            && Chat::where('user_one_id', $invitedUser->id)->where('user_two_id', Auth::user()->id)->get()->isEmpty();
+        $chat = Chat::initiated(request()->user(), $invitedUser);
 
-        $inviteDoesNotExist = ChatInvite::where('sender_id', Auth::user()->id)->where('receiver_id', $invitedUser->id)->get()->isEmpty()
-            && ChatInvite::where('sender_id', $invitedUser->id)->where('receiver_id', Auth::user()->id)->get()->isEmpty();
+        $invite = ChatInvite::initiated($request->user(), $invitedUser);
 
-        if ($chatDoesNotExist && $inviteDoesNotExist) {
+        if ($chat->doesntExist() && $invite->doesntExist()) {
             ChatInvite::create([
                 'sender_id' => Auth::user()->id,
                 'receiver_id' => $invitedUser->id,
