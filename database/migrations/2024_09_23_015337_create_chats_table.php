@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,6 +14,8 @@ return new class extends Migration
     {
         Schema::create('chats', function (Blueprint $table) {
             $table->id();
+            $table->foreignIdFor(User::class, 'user_one_id')->cascadeOnDelete();
+            $table->foreignIdFor(User::class, 'user_two_id')->cascadeOnDelete();
             $table->timestamps();
         });
     }
