@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Chat extends Model
 {
@@ -26,10 +25,10 @@ class Chat extends Model
 
     public function scopeInitiated(Builder $query, User $one, User $two): Builder
     {
-        return $query->where(fn($chat) => $chat
+        return $query->where(fn ($chat) => $chat
             ->whereUserOneId($one->id)
             ->whereUserTwoId($two->id))
-            ->orWhere(fn($chat) => $chat
+            ->orWhere(fn ($chat) => $chat
                 ->whereUserOneId($two->id)
                 ->whereUserTwoId($one->id));
     }

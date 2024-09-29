@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Chat;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Chat\StoreChatInvite;
 use App\Http\Requests\Chat\StoreChatRequest;
 use App\Models\Chat;
+use App\Models\ChatInvite;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -16,7 +16,9 @@ class ChatController extends Controller
      */
     public function index()
     {
-        return Inertia::render('Chats/Index');
+        return Inertia::render('Chats/Index', [
+            'hasIncomingInvites' => (ChatInvite::whereReceiverId(request()->user()->id)->count() !== 0),
+        ]);
     }
 
     /**
@@ -32,7 +34,8 @@ class ChatController extends Controller
      */
     public function store(StoreChatRequest $request)
     {
-        //
+        $request = $request->validated();
+
     }
 
     /**

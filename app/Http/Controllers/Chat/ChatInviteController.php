@@ -3,16 +3,12 @@
 namespace App\Http\Controllers\Chat;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Chat\StoreChatInvite;
-use App\Http\Requests\Chat\StoreChatInviteRequest as ChatStoreChatInviteRequest;
 use App\Http\Requests\Chat\StoreChatInviteRequest;
-use App\Http\Requests\UpdateChatInviteRequest;
 use App\Models\Chat;
 use App\Models\ChatInvite;
 use App\Models\User;
-use Illuminate\Contracts\Cache\Store;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
+use Inertia\Inertia;
 
 class ChatInviteController extends Controller
 {
@@ -21,15 +17,9 @@ class ChatInviteController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        return Inertia::render('ChatInvites/Index', [
+            'incomingInvites' => ChatInvite::with(['sender', 'receiver'])->whereReceiverId(request()->user()->id)->simplePaginate(8),
+        ]);
     }
 
     /**
@@ -41,7 +31,7 @@ class ChatInviteController extends Controller
 
         $invitedUser = User::where('username', $validated['username'])->first();
 
-        if (!$invitedUser) {
+        if (! $invitedUser) {
             return redirect(route('chats.index'));
         }
 
@@ -57,6 +47,14 @@ class ChatInviteController extends Controller
         }
 
         return redirect(route('chats.index'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        //
     }
 
     /**

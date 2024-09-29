@@ -1,26 +1,29 @@
 <script setup>
-    import { Head } from '@inertiajs/vue3';
-    import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-    import { ref } from 'vue';
-    import { useForm } from '@inertiajs/vue3';
-    import InputLabel from '@/Components/InputLabel.vue';
-    import TextInput from '@/Components/TextInput.vue';
-    import InputError from '@/Components/InputError.vue';
-    import PrimaryButton from '@/Components/PrimaryButton.vue';
+import {Head, useForm} from '@inertiajs/vue3';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
+import {ref} from 'vue';
+import InputLabel from '@/Components/InputLabel.vue';
+import TextInput from '@/Components/TextInput.vue';
+import InputError from '@/Components/InputError.vue';
+import PrimaryButton from '@/Components/PrimaryButton.vue';
 
-    const inviteFormIsActive = ref(false);
+const props = defineProps({
+    hasIncomingInvites: Boolean,
+})
 
-    const toggleInviteForm = () => {
-        inviteFormIsActive.value = !inviteFormIsActive.value;
-    }
+const inviteFormIsActive = ref(false);
 
-    const form = useForm({
-        username: '',
-    });
+const toggleInviteForm = () => {
+    inviteFormIsActive.value = !inviteFormIsActive.value;
+}
+
+const form = useForm({
+    username: '',
+});
 </script>
 
 <template>
-    <Head title="Chats" />
+    <Head title="Chats"/>
 
     <AuthenticatedLayout>
         <div class="m-5 p-3 max-w-full bg-gray-800 rounded-lg flex min-h-[88vh]">
@@ -28,26 +31,30 @@
 
                 <div class="flex justify-between items-start">
                     <h1 class="text-2xl text-white font-bold mb-2 ml-3">My Chats</h1>
-                    <button v-if="!inviteFormIsActive" @click="toggleInviteForm" class="bg-white rounded-lg px-1 h-9 text-black">New Chat</button>
-                    <button v-else @click="toggleInviteForm" class="bg-white rounded-lg px-1 h-9 text-black">Cancel</button>
+                    <button v-if="!inviteFormIsActive" class="bg-white rounded-lg px-1 h-9 text-black"
+                            @click="toggleInviteForm">New Chat
+                    </button>
+                    <button v-else class="bg-white rounded-lg px-1 h-9 text-black" @click="toggleInviteForm">Cancel
+                    </button>
                 </div>
 
-                <div v-if="inviteFormIsActive" class="flex flex-col items-center border-2 border-gray-700 mt-2 py-2 rounded-xl">
+                <div v-if="inviteFormIsActive"
+                     class="flex flex-col items-center border-2 border-gray-700 mt-2 py-2 rounded-xl">
                     <form @submit.prevent="form.post(route('chatinvites.store'))">
                         <div>
-                            <InputLabel class="pl-1" for="username" value="Username" />
+                            <InputLabel class="pl-1" for="username" value="Username"/>
 
-                            <TextInput 
+                            <TextInput
                                 id="username"
-                                type="text"
                                 v-model="form.username"
+                                autocomplete="username"
+                                autofocus
                                 class="mt-1 block min-w-full"
                                 required
-                                autofocus
-                                autocomplete="username"
+                                type="text"
                             />
 
-                            <InputError class="mt-2" :message="form.errors.username" />
+                            <InputError :message="form.errors.username" class="mt-2"/>
                         </div>
                         <PrimaryButton class="mt-4">
                             Send
@@ -55,25 +62,35 @@
                     </form>
                 </div>
 
+                <div v-if="hasIncomingInvites">
+                    <a :href="route('chatinvites.index')"
+                       class="text-blue-600 underline text-center ml-2 hover:text-blue-400 transition">Click here to
+                        view
+                        incoming
+                        chat invites</a>
+                </div>
+
                 <!-- Chats -->
-                <a href="#" class="hover:bg-gray-700 transition rounded-3xl m-1 p-1">
+                <a class="hover:bg-gray-700 transition rounded-3xl m-1 p-1" href="#">
                     <div class="flex items-center">
-                        <img src="https://dummyimage.com/48/48" alt="User profile picture" class="rounded-3xl mr-3">
-                        <p class="text-white text-lg overflow-hidden text-ellipsis whitespace-nowrap max-w-64">Person Name</p>
+                        <img alt="User profile picture" class="rounded-3xl mr-3" src="https://dummyimage.com/48/48">
+                        <p class="text-white text-lg overflow-hidden text-ellipsis whitespace-nowrap max-w-64">Person
+                            Name</p>
                     </div>
                 </a>
 
-                <a href="#" class="hover:bg-gray-700 transition rounded-3xl m-1 p-1">
+                <a class="hover:bg-gray-700 transition rounded-3xl m-1 p-1" href="#">
                     <div class="flex items-center">
-                        <img src="https://dummyimage.com/48/48" alt="User profile picture" class="rounded-3xl mr-3">
-                        <p class="text-white text-lg overflow-hidden text-ellipsis whitespace-nowrap max-w-64">Person Name</p>
+                        <img alt="User profile picture" class="rounded-3xl mr-3" src="https://dummyimage.com/48/48">
+                        <p class="text-white text-lg overflow-hidden text-ellipsis whitespace-nowrap max-w-64">Person
+                            Name</p>
                     </div>
                 </a>
 
             </div>
 
             <div class="grow-[6] border-solid border-2 border-gray-600 rounded-lg p-2 ml-1">
-                
+
             </div>
         </div>
     </AuthenticatedLayout>

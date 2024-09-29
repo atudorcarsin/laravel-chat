@@ -3,8 +3,6 @@
 use App\Http\Controllers\Chat\ChatController;
 use App\Http\Controllers\Chat\ChatInviteController;
 use App\Http\Controllers\ProfileController;
-use Illuminate\Auth\Events\Verified;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -21,7 +19,7 @@ Route::resource('chats', ChatController::class)
     ->middleware(['auth', 'verified']);
 
 Route::resource('chatinvites', ChatInviteController::class)
-    ->only(['store', 'destroy'])
+    ->only(['store', 'destroy', 'index'])
     ->middleware(['auth', 'verified']);
 
 Route::middleware('auth')->group(function () {
@@ -30,4 +28,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';
