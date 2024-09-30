@@ -12,9 +12,6 @@ use Inertia\Inertia;
 
 class ChatInviteController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         return Inertia::render('ChatInvites/Index', [
@@ -22,18 +19,11 @@ class ChatInviteController extends Controller
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreChatInviteRequest $request)
     {
         $validated = $request->validated();
 
-        $invitedUser = User::where('username', $validated['username'])->first();
-
-        if (! $invitedUser) {
-            return redirect(route('chats.index'));
-        }
+        $invitedUser = User::whereUsername($validated['username'])->first();
 
         $chat = Chat::initiated(request()->user(), $invitedUser);
 
@@ -44,48 +34,45 @@ class ChatInviteController extends Controller
                 'sender_id' => Auth::user()->id,
                 'receiver_id' => $invitedUser->id,
             ]);
+
+            // TODO: Implement success message when invite is sent
+            return redirect(route('chats.index'));
         }
 
-        return redirect(route('chats.index'));
+        return redirect(route('chats.index'))->withErrors(['username' => 'Conversation or invite already exists']);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         //
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(ChatInvite $ChatInvite)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(ChatInvite $ChatInvite)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(ChatInvite $request, ChatInvite $ChatInvite)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(ChatInvite $ChatInvite)
+    // TODO: Fix bug where id from delete request cannot be converted to ChatInvite instance
+    public function destroy(int $id)
     {
-        //
+        $ChatInvite = ChatInvite::find($id);
+
+        if (request()->user()->cannot('delete', $ChatInvite)) {
+            abort(403);
+        }
+
+        $ChatInvite->delete();
+
+        return redirect(route('chatinvites.index'));
     }
 }

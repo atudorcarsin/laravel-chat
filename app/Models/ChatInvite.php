@@ -25,10 +25,10 @@ class ChatInvite extends Model
 
     public function scopeInitiated(Builder $query, User $one, User $two): Builder
     {
-        return $query->where(fn($invite) => $invite
+        return $query->where(fn ($invite) => $invite
             ->whereSenderId($one->id)
             ->whereReceiverId($two->id))
-            ->orWhere(fn($invite) => $invite
+            ->orWhere(fn ($invite) => $invite
                 ->whereSenderId($two->id)
                 ->whereReceiverId($one->id));
     }
