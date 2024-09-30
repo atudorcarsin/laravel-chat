@@ -1,6 +1,7 @@
 <script setup>
 import {Head, useForm} from '@inertiajs/vue3';
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
+import SimplePaginate from "@/Components/SimplePaginate.vue";
 
 const props = defineProps(['incomingInvites']);
 
@@ -51,22 +52,8 @@ for (const incomingInvite of props.incomingInvites.data) {
                 </div>
             </div>
 
-            <div class="flex justify-end">
-                <a v-if="incomingInvites.prev_page_url" :href="incomingInvites.first_page_url"
-                   class="text-gray-300 bg-slate-600 rounded-md p-2 m-2 hover:bg-slate-700 transition">First</a>
-                <span v-else
-                      class="text-gray-300 bg-slate-600 rounded-md p-2 m-2 hover:bg-slate-700 transition">First</span>
 
-                <a v-if="incomingInvites.prev_page_url" :href="incomingInvites.prev_page_url"
-                   class="text-gray-300 bg-slate-600 rounded-md p-2 m-2 hover:bg-slate-700 transition">Previous</a>
-                <span v-else
-                      class="text-gray-300 bg-slate-600 rounded-md p-2 m-2 hover:bg-slate-700 transition">Previous</span>
-
-                <a v-if="incomingInvites.next_page_url" :href="incomingInvites.next_page_url"
-                   class="text-gray-300 bg-slate-600 rounded-md p-2 m-2 hover:bg-slate-700 transition">Next</a>
-                <span v-else
-                      class="text-gray-300 bg-slate-600 rounded-md p-2 m-2 hover:bg-slate-700 transition">Next</span>
-            </div>
+            <SimplePaginate :data="incomingInvites"/>
         </div>
     </AuthenticatedLayout>
 </template>
