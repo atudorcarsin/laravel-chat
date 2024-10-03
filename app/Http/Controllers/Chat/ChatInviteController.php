@@ -35,8 +35,7 @@ class ChatInviteController extends Controller
                 'receiver_id' => $invitedUser->id,
             ]);
 
-            // TODO: Implement success message when invite is sent
-            return redirect(route('chats.index'));
+            return redirect(route('chats.index'))->with('message', 'Invite successfully sent.');
         }
 
         return redirect(route('chats.index'))->withErrors(['username' => 'Conversation or invite already exists']);

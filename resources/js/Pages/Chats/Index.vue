@@ -1,11 +1,14 @@
 <script setup>
-import {Head, useForm} from '@inertiajs/vue3';
+import {Head, useForm, usePage} from '@inertiajs/vue3';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import {ref} from 'vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
+import FormSuccess from "@/Components/FormSuccess.vue";
+
+const page = usePage();
 
 const props = defineProps({
     hasIncomingInvites: Boolean,
@@ -38,6 +41,7 @@ const form = useForm({
                     </button>
                 </div>
 
+
                 <div v-if="inviteFormIsActive"
                      class="flex flex-col items-center border-2 border-gray-700 mt-2 py-2 rounded-xl">
                     <form @submit.prevent="form.post(route('chatinvites.store'))">
@@ -56,6 +60,9 @@ const form = useForm({
 
                             <InputError :message="form.errors.username" class="mt-2"/>
                         </div>
+
+                        <FormSuccess :message="page.props.flash.message"/>
+
                         <PrimaryButton class="mt-4">
                             Send
                         </PrimaryButton>
@@ -64,10 +71,9 @@ const form = useForm({
 
                 <div v-if="hasIncomingInvites">
                     <a :href="route('chatinvites.index')"
-                       class="text-blue-600 underline text-center ml-2 hover:text-blue-400 transition">Click here to
-                        view
-                        incoming
-                        chat invites</a>
+                       class="text-blue-600 underline text-center ml-2 hover:text-blue-400 transition">
+                        New chat invites! Click here to view
+                    </a>
                 </div>
 
                 <!-- Chats -->
