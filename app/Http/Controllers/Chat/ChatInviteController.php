@@ -4,9 +4,7 @@ namespace App\Http\Controllers\Chat;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Chat\StoreChatInviteRequest;
-use App\Models\Chat;
 use App\Models\ChatInvite;
-use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
@@ -21,24 +19,12 @@ class ChatInviteController extends Controller
 
     public function store(StoreChatInviteRequest $request)
     {
-        $validated = $request->validated();
+        ChatInvite::create([
+            'sender_id' => Auth::user()->id,
+            'receiver_id' => $request->invitedUser()->id,
+        ]);
 
-        $invitedUser = User::whereUsername($validated['username'])->first();
-
-        $chat = Chat::initiated(request()->user(), $invitedUser);
-
-        $invite = ChatInvite::initiated($request->user(), $invitedUser);
-
-        if ($chat->doesntExist() && $invite->doesntExist()) {
-            ChatInvite::create([
-                'sender_id' => Auth::user()->id,
-                'receiver_id' => $invitedUser->id,
-            ]);
-
-            return redirect(route('chats.index'))->with('message', 'Invite successfully sent.');
-        }
-
-        return redirect(route('chats.index'))->withErrors(['username' => 'Conversation or invite already exists']);
+        return redirect(route('chats.index'))->with('message', 'Invite successfully sent.');
     }
 
     public function create()

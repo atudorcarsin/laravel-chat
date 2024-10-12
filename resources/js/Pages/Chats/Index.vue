@@ -59,11 +59,11 @@ const form = useForm({
                             />
 
                             <InputError :message="form.errors.username" class="mt-2"/>
+
+                            <FormSuccess :message="page.props.flash.message" class="mt-2"/>
                         </div>
 
-                        <FormSuccess :message="page.props.flash.message"/>
-
-                        <PrimaryButton class="mt-4">
+                        <PrimaryButton>
                             Send
                         </PrimaryButton>
                     </form>

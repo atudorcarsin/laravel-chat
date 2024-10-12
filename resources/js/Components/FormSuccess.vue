@@ -4,9 +4,9 @@ const props = defineProps({
 })
 </script>
 
-<template v-if="message">
+<template v-show="message">
     <div>
-        <p class="mt-2 text-green-600 text-sm">
+        <p class="text-green-600 text-sm">
             {{ message }}
         </p>
     </div>
