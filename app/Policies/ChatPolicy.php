@@ -3,8 +3,8 @@
 namespace App\Policies;
 
 use App\Models\Chat;
+use App\Models\ChatInvite;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class ChatPolicy
 {
@@ -21,15 +21,23 @@ class ChatPolicy
      */
     public function view(User $user, Chat $chat): bool
     {
-        //
+        if ($user->id === $chat->user_one_id || $user->id === $chat->user_two_id) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user): bool
+    public function create(User $user, int $receiverId): bool
     {
-        //
+        if ($user->id !== $receiverId || ChatInvite::whereReceiverId($receiverId)->doesntExist()) {
+            return false;
+        }
+
+        return true;
     }
 
     /**

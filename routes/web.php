@@ -15,7 +15,7 @@ Route::get('dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::resource('chats', ChatController::class)
-    ->only(['index', 'store'])
+    ->only(['index', 'store', 'show'])
     ->middleware(['auth', 'verified']);
 
 Route::resource('chatinvites', ChatInviteController::class)

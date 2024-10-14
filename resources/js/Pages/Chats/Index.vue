@@ -7,12 +7,16 @@ import TextInput from '@/Components/TextInput.vue';
 import InputError from '@/Components/InputError.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import FormSuccess from "@/Components/FormSuccess.vue";
+import Chats from "@/Pages/Chats/Partials/Chats.vue";
+import SimplePaginate from "@/Components/SimplePaginate.vue";
 
 const page = usePage();
 
 const props = defineProps({
     hasIncomingInvites: Boolean,
-})
+    chats: Object,
+    currentUser: Object,
+});
 
 const inviteFormIsActive = ref(false);
 
@@ -23,6 +27,7 @@ const toggleInviteForm = () => {
 const form = useForm({
     username: '',
 });
+
 </script>
 
 <template>
@@ -77,26 +82,14 @@ const form = useForm({
                 </div>
 
                 <!-- Chats -->
-                <a class="hover:bg-gray-700 transition rounded-3xl m-1 p-1" href="#">
-                    <div class="flex items-center">
-                        <img alt="User profile picture" class="rounded-3xl mr-3" src="https://dummyimage.com/48/48">
-                        <p class="text-white text-lg overflow-hidden text-ellipsis whitespace-nowrap max-w-64">Person
-                            Name</p>
-                    </div>
-                </a>
+                <Chats :chats="chats" :currentUser="currentUser"/>
 
-                <a class="hover:bg-gray-700 transition rounded-3xl m-1 p-1" href="#">
-                    <div class="flex items-center">
-                        <img alt="User profile picture" class="rounded-3xl mr-3" src="https://dummyimage.com/48/48">
-                        <p class="text-white text-lg overflow-hidden text-ellipsis whitespace-nowrap max-w-64">Person
-                            Name</p>
-                    </div>
-                </a>
+                <SimplePaginate :data="chats"/>
 
             </div>
 
-            <div class="grow-[6] border-solid border-2 border-gray-600 rounded-lg p-2 ml-1">
-
+            <div class="grow-[6] border-solid border-2 border-gray-600 rounded-lg p-2 ml-1 flex flex-col justify-end">
+                <h1 v-show="page.props.flash.chat">There is a chat</h1>
             </div>
         </div>
     </AuthenticatedLayout>

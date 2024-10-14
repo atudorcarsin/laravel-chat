@@ -8,11 +8,10 @@ const props = defineProps(['incomingInvites']);
 const acceptedInviteForms = {};
 const declinedInviteForms = {};
 
-// TODO: Replace forms with buttons that perform the necessary requests
 for (const incomingInvite of props.incomingInvites.data) {
     acceptedInviteForms[incomingInvite.id] = useForm({
-        userOne: incomingInvite.sender.id,
-        userTwo: incomingInvite.receiver.id,
+        senderId: incomingInvite.sender.id,
+        receiverId: incomingInvite.receiver.id,
     });
 
     declinedInviteForms[incomingInvite.id] = useForm({});
