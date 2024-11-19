@@ -9,6 +9,7 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 import FormSuccess from "@/Components/FormSuccess.vue";
 import Chats from "@/Pages/Chats/Partials/Chats.vue";
 import SimplePaginate from "@/Components/SimplePaginate.vue";
+import axios from "axios";
 
 const page = usePage();
 
@@ -18,15 +19,38 @@ const props = defineProps({
     currentUser: Object,
 });
 
+const chatData = ref(null);
+
 const inviteFormIsActive = ref(false);
 
 const toggleInviteForm = () => {
     inviteFormIsActive.value = !inviteFormIsActive.value;
 }
 
-const form = useForm({
+const inviteForm = useForm({
     username: '',
 });
+
+const messageForm = useForm({
+    chat_id: '',
+    text_content: '',
+});
+
+const setChatId = (id) => {
+    messageForm.chat_id = id;
+}
+
+const getChat = (chat) => {
+    axios.get(route('chats.show', chat))
+        .then((response) => {
+            chatData.value = response.data;
+        });
+};
+
+const getUsername = (userId) => {
+    return (chatData.value.user_one.id == userId) ? chatData.value.user_one.username : chatData.value.user_two.username;
+};
+
 
 </script>
 
@@ -49,13 +73,13 @@ const form = useForm({
 
                 <div v-if="inviteFormIsActive"
                      class="flex flex-col items-center border-2 border-gray-700 mt-2 py-2 rounded-xl">
-                    <form @submit.prevent="form.post(route('chatinvites.store'))">
+                    <form @submit.prevent="inviteForm.post(route('chatinvites.store'))">
                         <div>
                             <InputLabel class="pl-1" for="username" value="Username"/>
 
                             <TextInput
                                 id="username"
-                                v-model="form.username"
+                                v-model="inviteForm.username"
                                 autocomplete="username"
                                 autofocus
                                 class="mt-1 block min-w-full"
@@ -63,7 +87,7 @@ const form = useForm({
                                 type="text"
                             />
 
-                            <InputError :message="form.errors.username" class="mt-2"/>
+                            <InputError :message="inviteForm.errors.username" class="mt-2"/>
 
                             <FormSuccess :message="page.props.flash.message" class="mt-2"/>
                         </div>
@@ -82,14 +106,52 @@ const form = useForm({
                 </div>
 
                 <!-- Chats -->
-                <Chats :chats="chats" :currentUser="currentUser"/>
+                <Chats :chats="chats" :currentUser="currentUser" @loadChat="getChat"/>
 
                 <SimplePaginate :data="chats"/>
 
             </div>
 
-            <div class="grow-[6] border-solid border-2 border-gray-600 rounded-lg p-2 ml-1 flex flex-col justify-end">
-                <h1 v-show="page.props.flash.chat">There is a chat</h1>
+            <div
+                v-if="chatData"
+                class="grow-[6] border-solid border-2 border-gray-600 rounded-lg p-2 ml-1 flex flex-col-reverse">
+
+                <div>
+                    <form class="flex justify-between"
+                          @submit.prevent="messageForm.post(route('messages.store')); messageForm.text_content = ''">
+                        <input id="chat_id" v-model="messageForm.chat_id" name="chat_id"
+                               type="hidden"
+                        />
+
+                        <InputLabel class="hidden" for="text_content" value="Text Content"/>
+                        <input id="text_content"
+                               v-model="messageForm.text_content"
+                               class="bg-gray-800 py-2 w-auto min-w-[95%] rounded-xl text-lg caret-gray-300 text-gray-300"
+                               name="text_content" placeholder="Type a new message" type="text">
+                        <PrimaryButton class="ml-2 rounded-xl py-0" type="submit" @click="setChatId(chatData.id)">
+                            Send
+                        </PrimaryButton>
+
+                        <InputError :message="messageForm.errors.text_content"></InputError>
+                        <InputError :message="messageForm.errors.chat_id"></InputError>
+
+                    </form>
+                </div>
+
+                <div>
+                    <div v-for="message in chatData.messages" class="border-gray-700 border rounded-lg p-1 my-2">
+                        <p class="text-white text-lg font-bold">
+                            {{ getUsername(message.user_id) }} - {{ message.created_at }}
+                        </p>
+                        <p class="text-white">{{ message.text_content }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                v-else
+                class="grow-[6] border-solid border-2 border-gray-600 rounded-lg p-2 ml-1 flex justify-center items-center">
+                <p class="text-xl text-white">Select a chat or create a new chat</p>
             </div>
         </div>
     </AuthenticatedLayout>

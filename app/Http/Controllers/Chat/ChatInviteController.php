@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Chat\StoreChatInviteRequest;
 use App\Models\ChatInvite;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
 
 class ChatInviteController extends Controller
@@ -24,7 +25,7 @@ class ChatInviteController extends Controller
             'receiver_id' => $request->invitedUser()->id,
         ]);
 
-        return redirect(route('chats.index'))->with('message', 'Invite successfully sent.');
+        Session::flash('message', 'Invite successfully sent.');
     }
 
     public function create()
@@ -47,17 +48,12 @@ class ChatInviteController extends Controller
         //
     }
 
-    // TODO: Fix bug where id from delete request cannot be converted to ChatInvite instance
-    public function destroy(int $id)
+    public function destroy(ChatInvite $chatinvite): void
     {
-        $ChatInvite = ChatInvite::find($id);
-
-        if (request()->user()->cannot('delete', $ChatInvite)) {
+        if (request()->user()->cannot('delete', $chatinvite)) {
             abort(403);
         }
 
-        $ChatInvite->delete();
-
-        return redirect(route('chatinvites.index'));
+        $chatinvite->delete();
     }
 }

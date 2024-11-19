@@ -10,13 +10,15 @@ class Message extends Model
 {
     use HasFactory;
 
-    protected $fillable = [
-        'chat_id',
-        'text_content',
-    ];
+    protected $guarded = [];
 
     public function chat(): BelongsTo
     {
         return $this->belongsTo(Chat::class);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 }

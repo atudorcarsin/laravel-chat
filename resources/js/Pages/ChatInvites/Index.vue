@@ -42,7 +42,7 @@ for (const incomingInvite of props.incomingInvites.data) {
                         </button>
                     </form>
                     <form
-                        @submit.prevent="declinedInviteForms[incomingInvite.id].delete(route('chatinvites.destroy', incomingInvite.id))">
+                        @submit.prevent="declinedInviteForms[incomingInvite.id].delete(route('chatinvites.destroy', parseInt(incomingInvite.id)))">
                         <button
                             class="rounded-xl p-2 m-1 border-gray-800 bg-gray-500 text-white hover:bg-gray-400 transition duration-200 ease-in-out"
                             type="submit">Decline

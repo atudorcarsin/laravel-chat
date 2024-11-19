@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Chat\ChatController;
 use App\Http\Controllers\Chat\ChatInviteController;
+use App\Http\Controllers\MessageController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -20,6 +21,10 @@ Route::resource('chats', ChatController::class)
 
 Route::resource('chatinvites', ChatInviteController::class)
     ->only(['store', 'destroy', 'index'])
+    ->middleware(['auth', 'verified']);
+
+Route::resource('messages', MessageController::class)
+    ->only(['store'])
     ->middleware(['auth', 'verified']);
 
 Route::middleware('auth')->group(function () {

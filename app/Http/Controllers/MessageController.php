@@ -17,7 +17,11 @@ class MessageController extends Controller
 
     public function store(MessageRequest $request)
     {
-        //
+        Message::create([
+            'chat_id' => $request->chat_id,
+            'user_id' => $request->user()->id,
+            'text_content' => $request->text_content,
+        ]);
     }
 
     public function show(Message $message)

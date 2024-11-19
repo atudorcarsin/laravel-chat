@@ -44,7 +44,9 @@ class ChatController extends Controller
     {
         Gate::authorize('view', [Chat::class, $chat]);
 
-        return redirect(route('chats.index'))->with('chat', $chat->load('messages', 'userOne', 'userTwo'));
+        return $chat->load('messages', 'userOne', 'userTwo');
+
+        //return redirect(route('chats.index'))->with('chat', $chat->load('messages', 'userOne', 'userTwo'));
     }
 
     public function edit(Chat $chat)
