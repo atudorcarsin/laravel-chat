@@ -40,11 +40,24 @@ class ChatController extends Controller
         //
     }
 
-    public function show(Chat $chat)
+    public function show(Chat $chat, int $start, int $length)
     {
         Gate::authorize('view', [Chat::class, $chat]);
 
-        return $chat->load('messages', 'userOne', 'userTwo');
+        //return $chat->messages()->orderBy('id')->get();
+
+        return [
+            'id' => $chat->id,
+            'messages' => $chat->messages()->orderBy('id', 'desc')->offset($start)->limit($length)->get(),
+            'user_one' => $chat->userOne,
+            'user_two' => $chat->userTwo,
+        ];
+
+        //        return $chat->load([
+        //            'messages' => fn ($query) => $query->orderBy('id'),
+        //            'userOne',
+        //            'userTwo',
+        //        ]);
 
         //return redirect(route('chats.index'))->with('chat', $chat->load('messages', 'userOne', 'userTwo'));
     }

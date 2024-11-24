@@ -17,6 +17,9 @@ class MessageRequest extends FormRequest
 
     public function authorize(): bool
     {
+        if (! Chat::find($this->chat_id)) {
+            return false;
+        }
         if ($this->user()->id != Chat::find($this->chat_id)->first()->userOne->id
             && $this->user()->id != Chat::find($this->chat_id)->first()->userTwo->id) {
             return false;

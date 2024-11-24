@@ -19,7 +19,11 @@ const props = defineProps({
     currentUser: Object,
 });
 
+const pageLength = 10;
+
 const chatData = ref(null);
+const messages = ref([]);
+const message = ref([]);
 
 const inviteFormIsActive = ref(false);
 
@@ -36,21 +40,31 @@ const messageForm = useForm({
     text_content: '',
 });
 
+const sendMessage = () => {
+    messageForm.post(route('messages.store'));
+    messageForm.text_content = '';
+};
+
 const setChatId = (id) => {
     messageForm.chat_id = id;
 }
 
 const getChat = (chat) => {
-    axios.get(route('chats.show', chat))
-        .then((response) => {
-            chatData.value = response.data;
+    axios.get(route('chats.show', [chat.id, messages.value.length, pageLength]))
+        //axios.get(`chats/${chat.id}/${messages.value.length}/${pageLength}`)
+        .then(({data}) => {
+            chatData.value = data;
+            console.log(data);
+            messages.value.push(...data.messages);
+            //nextTick(scroll);
+            //nextTick(() => message.value[message.value.length - 1].scrollIntoView());
+
         });
 };
 
 const getUsername = (userId) => {
     return (chatData.value.user_one.id == userId) ? chatData.value.user_one.username : chatData.value.user_two.username;
 };
-
 
 </script>
 
@@ -118,7 +132,7 @@ const getUsername = (userId) => {
 
                 <div>
                     <form class="flex justify-between"
-                          @submit.prevent="messageForm.post(route('messages.store')); messageForm.text_content = ''">
+                          @submit.prevent="sendMessage()">
                         <input id="chat_id" v-model="messageForm.chat_id" name="chat_id"
                                type="hidden"
                         />
@@ -138,13 +152,23 @@ const getUsername = (userId) => {
                     </form>
                 </div>
 
-                <div>
-                    <div v-for="message in chatData.messages" class="border-gray-700 border rounded-lg p-1 my-2">
+                <div class="max-h-[80vh] overflow-scroll flex flex-col-reverse">
+                    <div v-for="(message,index) in messages"
+                         :key="message.id"
+                         ref="message"
+                         :class="'message-'+index"
+                         class="chat-message border-gray-700 border rounded-lg p-1 my-2">
                         <p class="text-white text-lg font-bold">
                             {{ getUsername(message.user_id) }} - {{ message.created_at }}
                         </p>
                         <p class="text-white">{{ message.text_content }}</p>
                     </div>
+
+                    <button v-if="chatData"
+                            class="bg-white text-black text-lg w-48 rounded-xl self-center hover:bg-gray-300 transition"
+                            @click="getChat({ id: chatData.id})"
+                    >Load More
+                    </button>
                 </div>
             </div>
 
