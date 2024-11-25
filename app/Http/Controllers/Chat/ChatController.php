@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Chat;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Chat\StoreChatRequest;
+use App\Http\Resources\ChatResource;
+use App\Http\Resources\UserResource;
 use App\Models\Chat;
 use App\Models\ChatInvite;
 use Illuminate\Http\Request;
@@ -16,10 +18,10 @@ class ChatController extends Controller
     {
         return Inertia::render('Chats/Index', [
             'hasIncomingInvites' => (ChatInvite::whereReceiverId(request()->user()->id)->count() !== 0),
-            'chats' => Chat::with('userOne', 'userTwo')
+            'chats' => ChatResource::collection(Chat::with('userOne', 'userTwo')
                 ->where(['user_one_id' => request()->user()->id])->orWhere(['user_two_id' => request()->user()->id])
-                ->simplePaginate(10),
-            'currentUser' => request()->user(),
+                ->simplePaginate(10)),
+            'currentUser' => new UserResource(request()->user()),
         ]);
     }
 
@@ -44,22 +46,11 @@ class ChatController extends Controller
     {
         Gate::authorize('view', [Chat::class, $chat]);
 
-        //return $chat->messages()->orderBy('id')->get();
-
-        return [
-            'id' => $chat->id,
-            'messages' => $chat->messages()->orderBy('id', 'desc')->offset($start)->limit($length)->get(),
-            'user_one' => $chat->userOne,
-            'user_two' => $chat->userTwo,
-        ];
-
-        //        return $chat->load([
-        //            'messages' => fn ($query) => $query->orderBy('id'),
-        //            'userOne',
-        //            'userTwo',
-        //        ]);
-
-        //return redirect(route('chats.index'))->with('chat', $chat->load('messages', 'userOne', 'userTwo'));
+        return new ChatResource($chat->load([
+            'messages' => fn ($query) => $query->orderBy('id', 'desc')->offset($start)->limit($length),
+            'userOne',
+            'userTwo',
+        ]));
     }
 
     public function edit(Chat $chat)

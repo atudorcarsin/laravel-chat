@@ -53,12 +53,11 @@ const getChat = (chat) => {
     axios.get(route('chats.show', [chat.id, messages.value.length, pageLength]))
         //axios.get(`chats/${chat.id}/${messages.value.length}/${pageLength}`)
         .then(({data}) => {
+            data = data.data;
             chatData.value = data;
-            console.log(data);
             messages.value.push(...data.messages);
             //nextTick(scroll);
             //nextTick(() => message.value[message.value.length - 1].scrollIntoView());
-
         });
 };
 
