@@ -51,18 +51,29 @@ const setChatId = (id) => {
 
 const getChat = (chat) => {
     axios.get(route('chats.show', [chat.id, messages.value.length, pageLength]))
-        //axios.get(`chats/${chat.id}/${messages.value.length}/${pageLength}`)
         .then(({data}) => {
             data = data.data;
             chatData.value = data;
+            if (!currentlyListening) listen();
             messages.value.push(...data.messages);
+
             //nextTick(scroll);
             //nextTick(() => message.value[message.value.length - 1].scrollIntoView());
         });
 };
 
+let currentlyListening = false;
+
+const listen = () => {
+    Echo.private(`chats.${chatData.value.id}`)
+        .listen('NewMessage', (e) => {
+            //console.log(e);
+            messages.value.unshift(e.chat.messages[e.chat.messages.length - 1]);
+        });
+};
+
 const getUsername = (userId) => {
-    return (chatData.value.user_one.id == userId) ? chatData.value.user_one.username : chatData.value.user_two.username;
+    return (chatData.value.user_one.id === userId) ? chatData.value.user_one.username : chatData.value.user_two.username;
 };
 
 </script>
