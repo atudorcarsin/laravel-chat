@@ -24,7 +24,7 @@ class MessageController extends Controller
             'text_content' => $request->text_content,
         ]);
 
-        NewMessage::dispatch($message->load('chat')->chat->load('messages'));
+        NewMessage::dispatch($message->load('chat'));
     }
 
     public function show(Message $message)

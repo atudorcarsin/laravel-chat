@@ -68,8 +68,9 @@ const listen = () => {
     Echo.private(`chats.${chatData.value.id}`)
         .listen('NewMessage', (e) => {
             //console.log(e);
-            messages.value.unshift(e.chat.messages[e.chat.messages.length - 1]);
+            messages.value.unshift(e.message);
         });
+    currentlyListening = true;
 };
 
 const getUsername = (userId) => {
