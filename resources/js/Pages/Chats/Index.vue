@@ -130,7 +130,7 @@ const getUsername = (userId) => {
                 </div>
 
                 <!-- Chats -->
-                <Chats :chats="chats" :currentUser="currentUser" @loadChat="getChat"/>
+                <Chats :chats="chats" :currentUser="page.props.auth.user" @loadChat="getChat"/>
 
                 <SimplePaginate :data="chats"/>
 
